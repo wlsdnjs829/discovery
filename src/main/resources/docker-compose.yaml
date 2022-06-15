@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  eureka-peer-1:
+    build:
+      context: ../../../../discovery
+      dockerfile: Dockerfile
+    image: ljw0829/eureka-server
+    hostname: eureka-peer-1
+    container_name: eureka-peer-1
+    ports:
+      - 3001:3001
+    environment:
+      - SPRING_PROFILES_ACTIVE=peer-1
+      - SERVER.PORT=3001
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-2:3002/eureka/, http://eureka-peer-3:3003/eureka/
+  eureka-peer-2:
+    image: ljw0829/eureka-server
+    hostname: eureka-peer-2
+    container_name: eureka-peer-2
+    ports:
+      - 3002:3002
+    environment:
+      - SPRING_PROFILES_ACTIVE=peer-2
+      - SERVER.PORT=3002
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-3:3003/eureka/
+  eureka-peer-3:
+    image: ljw0829/eureka-server
+    hostname: eureka-peer-3
+    container_name: eureka-peer-3
+    ports:
+      - 3003:3003
+    environment:
+      - SPRING_PROFILES_ACTIVE=peer-3
+      - SERVER.PORT=3003
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-2:3002/eureka/
+
+#  sso-auth:
+#    build:
+#      context: ../../auth
+#      dockerfile: Dockerfile
+#    image: service-discovery/sso-auth
+#    container_name: sso-auth
+#    restart: always
+#    environment:
+#      - STARTUP_WAIT=5
+#      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-2:3002/eureka/, http://eureka-peer-3:3003/eureka/
+#    ports:
+#      - 8090:8090
+#    depends_on:
+#      - eureka-peer-1
+#      - eureka-peer-2
+#      - eureka-peer-3
