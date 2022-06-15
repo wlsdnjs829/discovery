@@ -16,6 +16,8 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:3002/eureka/, http://localhost:3003/eureka/
+  server:
+    response-cache-update-interval-ms: 1000
 
 ---
 spring:
@@ -34,6 +36,8 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:3001/eureka/, http://localhost:3003/eureka/
+  server:
+    response-cache-update-interval-ms: 1000
 
 ---
 spring:
@@ -52,4 +56,5 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:3001/eureka/, http://localhost:3002/eureka/
-
+  server:
+    response-cache-update-interval-ms: 1000
