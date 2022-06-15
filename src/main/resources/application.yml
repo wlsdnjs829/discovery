@@ -10,7 +10,7 @@ server:
   port: 3001
 eureka:
   instance:
-    hostname: peer-1-server.com
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true
@@ -28,7 +28,7 @@ server:
   port: 3002
 eureka:
   instance:
-    hostname: peer-2-server.com
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true
@@ -46,7 +46,7 @@ server:
   port: 3003
 eureka:
   instance:
-    hostname: peer-3-server.com
+    hostname: localhost
   client:
     registerWithEureka: true
     fetchRegistry: true
