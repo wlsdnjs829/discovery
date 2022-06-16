@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  config-server:
+    build:
+      context: ../../../../config-server
+      dockerfile: Dockerfile
+    image: ljw0829/config-server
+    hostname: config-server
+    container_name: config-server
+    restart: always
+    environment:
+      - STARTUP_WAIT=5
+    ports:
+      - 8091:8091
   eureka-peer-1:
     build:
       context: ../../../../discovery
@@ -13,6 +25,8 @@ services:
     environment:
       - USE_PROFILE=peer-1
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-2:3002/eureka/, http://eureka-peer-3:3003/eureka/
+    depends_on:
+      - config-server
   eureka-peer-2:
     image: ljw0829/eureka-server
     hostname: eureka-peer-2
@@ -22,6 +36,8 @@ services:
     environment:
       - USE_PROFILE=peer-2
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-3:3003/eureka/
+    depends_on:
+      - config-server
   eureka-peer-3:
     image: ljw0829/eureka-server
     hostname: eureka-peer-3
@@ -31,3 +47,5 @@ services:
     environment:
       - USE_PROFILE=peer-3
       - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-2:3002/eureka/
+    depends_on:
+      - config-server
