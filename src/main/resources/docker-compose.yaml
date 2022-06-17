@@ -2,31 +2,27 @@ version: '3.8'
 
 services:
   config-server:
-    build:
-      context: ../../../../config-server
-      dockerfile: Dockerfile
     image: ljw0829/config-server
     hostname: config-server
     container_name: config-server
-    restart: always
     environment:
-      - STARTUP_WAIT=5
+      - USE_PROFILE=docker
     ports:
       - 8091:8091
+    networks:
+      - rpm
   eureka-peer-1:
-    build:
-      context: ../../../../discovery
-      dockerfile: Dockerfile
     image: ljw0829/eureka-server
     hostname: eureka-peer-1
     container_name: eureka-peer-1
     ports:
       - 3001:3001
     environment:
-      - USE_PROFILE=peer-1
-      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-2:3002/eureka/, http://eureka-peer-3:3003/eureka/
+      - USE_PROFILE=peer-docker-1
     depends_on:
       - config-server
+    networks:
+      - rpm
   eureka-peer-2:
     image: ljw0829/eureka-server
     hostname: eureka-peer-2
@@ -34,10 +30,11 @@ services:
     ports:
       - 3002:3002
     environment:
-      - USE_PROFILE=peer-2
-      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-3:3003/eureka/
+      - USE_PROFILE=peer-docker-2
     depends_on:
       - config-server
+    networks:
+      - rpm
   eureka-peer-3:
     image: ljw0829/eureka-server
     hostname: eureka-peer-3
@@ -45,7 +42,45 @@ services:
     ports:
       - 3003:3003
     environment:
-      - USE_PROFILE=peer-3
-      - EUREKA_CLIENT_SERVICE-URL_DEFAULT-ZONE= http://eureka-peer-1:3001/eureka/, http://eureka-peer-2:3002/eureka/
+      - USE_PROFILE=peer-docker-3
     depends_on:
       - config-server
+    networks:
+      - rpm
+  sso-auth:
+    image: ljw0829/sso-auth-server
+    hostname: sso-auth
+    container_name: sso-auth
+    ports:
+      - 9000:9000
+    environment:
+      - USE_PROFILE=docker
+    depends_on:
+      - config-server
+      - eureka-peer-1
+      - eureka-peer-2
+      - eureka-peer-3
+    networks:
+      - rpm
+  api-gateway:
+    image: ljw0829/api-gateway-server
+    hostname: api-gateway
+    container_name: api-gateway
+    ports:
+      - 8090:8090
+    environment:
+      - USE_PROFILE=docker
+    depends_on:
+      - config-server
+      - eureka-peer-1
+      - eureka-peer-2
+      - eureka-peer-3
+      - sso-auth
+    networks:
+      - rpm
+
+networks:
+  rpm:
+    external: true
+    internal: true
+    driver: bridge

@@ -1,4 +1,4 @@
-################## Application Configuration ####################
+################## Application Configuration - Local ####################
 ---
 spring:
   config:
@@ -7,7 +7,7 @@ spring:
     import: "optional:configserver:http://localhost:8091"
   cloud:
     config:
-      name: peer,eureka-server,cloud-bus
+      name: peer-1,cloud-bus
       profile: local
 
 server:
@@ -20,7 +20,7 @@ spring:
     import: "optional:configserver:http://localhost:8091"
   cloud:
     config:
-      name: peer,eureka-server,cloud-bus
+      name: peer-2,cloud-bus
       profile: local
 
 server:
@@ -33,8 +33,50 @@ spring:
     import: "optional:configserver:http://localhost:8091"
   cloud:
     config:
-      name: peer,eureka-server,cloud-bus
+      name: peer-3,cloud-bus
       profile: local
+
+server:
+  port: ${PORT:3003}
+
+
+################## Application Configuration - Docker ####################
+---
+spring:
+  config:
+    activate:
+      on-profile: peer-docker-1
+    import: "optional:configserver:http://config-server:8091"
+  cloud:
+    config:
+      name: peer-1,cloud-bus
+      profile: docker
+
+server:
+  port: ${PORT:3001}
+---
+spring:
+  config:
+    activate:
+      on-profile: peer-docker-2
+    import: "optional:configserver:http://config-server:8091"
+  cloud:
+    config:
+      name: peer-2,cloud-bus
+      profile: docker
+
+server:
+  port: ${PORT:3002}
+---
+spring:
+  config:
+    activate:
+      on-profile: peer-docker-3
+    import: "optional:configserver:http://config-server:8091"
+  cloud:
+    config:
+      name: peer-3,cloud-bus
+      profile: docker
 
 server:
   port: ${PORT:3003}
