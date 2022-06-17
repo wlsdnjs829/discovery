@@ -18,6 +18,7 @@ services:
     ports:
       - 3001:3001
     environment:
+      - STARTUP_WAIT=5
       - USE_PROFILE=peer-docker-1
     depends_on:
       - config-server
@@ -30,6 +31,7 @@ services:
     ports:
       - 3002:3002
     environment:
+      - STARTUP_WAIT=5
       - USE_PROFILE=peer-docker-2
     depends_on:
       - config-server
@@ -42,6 +44,7 @@ services:
     ports:
       - 3003:3003
     environment:
+      - STARTUP_WAIT=5
       - USE_PROFILE=peer-docker-3
     depends_on:
       - config-server
@@ -54,6 +57,7 @@ services:
     ports:
       - 9000:9000
     environment:
+      - STARTUP_WAIT=5
       - USE_PROFILE=docker
     depends_on:
       - config-server
@@ -69,13 +73,13 @@ services:
     ports:
       - 8090:8090
     environment:
+      - STARTUP_WAIT=5
       - USE_PROFILE=docker
     depends_on:
       - config-server
       - eureka-peer-1
       - eureka-peer-2
       - eureka-peer-3
-      - sso-auth
     networks:
       - rpm
 
